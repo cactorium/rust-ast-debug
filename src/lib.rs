@@ -1,6 +1,6 @@
 #![feature(quote, plugin_registrar)]
 #![crate_type = "dylib"]
-#![feature(rustc_private, collections, convert, quote)]
+#![feature(rustc_private, collections, quote)]
 
 #![feature(core)]
 extern crate core;
@@ -15,7 +15,6 @@ use syntax::ast;
 use syntax::ast::{TokenTree, Item};
 use syntax::ext::base::{ExtCtxt, MacResult, MacEager};
 use syntax::ext::build::AstBuilder;  // trait for expr_usize
-use syntax::owned_slice::OwnedSlice;
 use syntax::ptr::P;
 use syntax::util::small_vector::SmallVector;
 use rustc::plugin::Registry;
@@ -30,22 +29,19 @@ fn format_braces(unformatted_str: String) -> String {
     let rbrace = unformatted_str.replace("{", "{\n");
     let lbrace = rbrace.replace("}", "\n}");
     let comma = lbrace.replace(",",  ",\n");
-    let lparen = comma.replace("(", "(\n");
-    let rparen = lparen.replace(")", ")");
-    let lbrac = rparen.replace("[", "[\n");
-    let rbrac = lbrac.replace("]", "]");
-    let lines_str = rbrac.lines();
+    let lbrac = comma.replace("[", "[\n");
+    let lines_str = lbrac.lines();
     let line_map = lines_str.map(|ln: &str| -> (String, usize) {
-            if ln.contains(|ch: char| -> bool {
-                ch == '{' || ch == '(' || ch == '['
-            }) {
-                tab_level = tab_level + 1;
+            for ch in ln.chars() {
+                if ch == '}' || ch == ')' || ch == ']' {
+                    tab_level = tab_level - 1;
+                }
             }
             let ret = (String::from_str(ln.trim()), tab_level);
-            if ln.contains(|ch: char| -> bool {
-                ch == '}' || ch == ')' || ch == ']'
-            }) {
-                tab_level = tab_level - 1;
+            for ch in ln.chars() {
+                if ch == '{' || ch == '(' || ch == '[' {
+                    tab_level = tab_level + 1;
+                }
             }
             ret
         }).map(|tup: (String, usize)| -> String {
@@ -73,7 +69,7 @@ fn expand_ast(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree])
 
     if let Some(really_old_fn) = old_fn {
         match really_old_fn.node {
-            ast::ItemFn(ref decl, ref style, ref abi, ref generics, ref block) => {
+            ast::ItemFn(ref decl, _, _, _, ref block) => {
 
                 let mut new_contents = (**block).clone();
                 let block_debug = format!("{:?}", block);
