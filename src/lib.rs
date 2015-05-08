@@ -33,7 +33,7 @@ fn format_braces(unformatted_str: String) -> String {
     let lines_str = lbrac.lines();
     let line_map = lines_str.map(|ln: &str| -> (String, usize) {
             for ch in ln.chars() {
-                if ch == '}' || ch == ')' || ch == ']' {
+                if ch == '}' || ch == ']' {
                     tab_level = tab_level - 1;
                 }
             }
@@ -41,6 +41,9 @@ fn format_braces(unformatted_str: String) -> String {
             for ch in ln.chars() {
                 if ch == '{' || ch == '(' || ch == '[' {
                     tab_level = tab_level + 1;
+                }
+                if ch == ')' {
+                    tab_level = tab_level - 1;
                 }
             }
             ret
