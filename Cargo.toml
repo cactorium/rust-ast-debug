@@ -1,0 +1,9 @@
+[package]
+name = "ast_debug"
+version = "0.1.0"
+authors = ["Kelvin Ly <kelvin.ly1618@gmail.com>"]
+
+[lib]
+name = "ast_debug"
+path = "src/lib.rs"
+plugin = true
