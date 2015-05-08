@@ -2,6 +2,9 @@
 name = "ast_debug"
 version = "0.1.0"
 authors = ["Kelvin Ly <kelvin.ly1618@gmail.com>"]
+description = "Rust compiler plugin that prints out the AST of a function"
+repository = "https://github.com/cactorium/rust-ast-debug"
+license = "MIT"
 
 [lib]
 name = "ast_debug"
