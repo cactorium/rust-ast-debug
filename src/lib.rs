@@ -94,7 +94,7 @@ fn expand_ast(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree])
                 MacEager::items(new_items)
             }
             _ => {
-                cx.span_err(sp, "coroutine is only permissible on functions");
+                cx.span_err(sp, "ast is only permissible on functions");
                 Box::new(MacEager::default())
             }
         }
