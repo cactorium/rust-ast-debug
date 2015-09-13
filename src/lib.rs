@@ -1,6 +1,6 @@
 #![feature(quote, plugin_registrar)]
 #![crate_type = "dylib"]
-#![feature(rustc_private, collections, quote)]
+#![feature(rustc_private, quote)]
 
 #![feature(core)]
 extern crate core;
@@ -37,7 +37,7 @@ fn format_braces(unformatted_str: String) -> String {
                     tab_level = tab_level - 1;
                 }
             }
-            let ret = (String::from_str(ln.trim()), tab_level);
+            let ret = (ln.trim().to_string(), tab_level);
             for ch in ln.chars() {
                 if ch == '{' || ch == '(' || ch == '[' {
                     tab_level = tab_level + 1;
@@ -49,7 +49,7 @@ fn format_braces(unformatted_str: String) -> String {
             ret
         }).map(|tup: (String, usize)| -> String {
             let (ln, lvl) = tup;
-            let mut strng = String::from_str("\n");
+            let mut strng = "\n".to_string();
             for _ in 0..lvl {
                 strng.push_str("  ");
             }
@@ -72,7 +72,7 @@ fn expand_ast(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree])
 
     if let Some(really_old_fn) = old_fn {
         match really_old_fn.node {
-            ast::ItemFn(ref decl, _, _, _, ref block) => {
+            ast::ItemFn(ref decl, _, _, _, _, ref block) => {
 
                 let mut new_contents = (**block).clone();
                 let block_debug = format!("{:?}", block);
