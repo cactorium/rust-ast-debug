@@ -1,10 +1,10 @@
-#![feature(plugin, collections)]
+#![feature(plugin)]
 
 #![plugin(ast_debug)]
 
 ast!(fn foo() -> Box<Option<u32>> {
     let mut f = 4;
-    let g: Option<String> = Some(String::from_str("fooo"));
+    let g: Option<String> = Some("fooo".to_string());
     f = f + 2u32;
     if let Some(_) = g {
         Box::new(Some(f))
